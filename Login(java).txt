@@ -1,0 +1,62 @@
+package com.example.myapplication;
+
+import android.os.Bundle;
+import android.util.Patterns;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText email, password;
+    Button login, guest;
+    TextView forgot, signup;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        email = findViewById(R.id.etEmail);
+        password = findViewById(R.id.etPassword);
+        login = findViewById(R.id.btnLogin);
+        guest = findViewById(R.id.btnGuest);
+        forgot = findViewById(R.id.tvForgot);
+        signup = findViewById(R.id.tvSignup);
+
+        login.setOnClickListener(v -> {
+
+            String e = email.getText().toString().trim();
+            String p = password.getText().toString().trim();
+
+            if (e.isEmpty()) {
+                email.setError("Enter Email");
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(e).matches()) {
+                email.setError("Invalid Email");
+                return;
+            }
+
+            if (p.isEmpty()) {
+                password.setError("Enter Password");
+                return;
+            }
+
+            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+        });
+
+        guest.setOnClickListener(v ->
+                Toast.makeText(this, "Guest Login", Toast.LENGTH_SHORT).show());
+
+        forgot.setOnClickListener(v ->
+                Toast.makeText(this, "Forgot Password", Toast.LENGTH_SHORT).show());
+
+        signup.setOnClickListener(v ->
+                Toast.makeText(this, "Open Sign Up Screen", Toast.LENGTH_SHORT).show());
+    }
+}

@@ -1,0 +1,169 @@
+package com.example.sharedpreferences;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText usernameEt;
+    EditText mobileEt;
+    EditText emailEt;
+    EditText pass1Et;
+    EditText pass2Et;
+
+    Button submitBtn;
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+
+        // Find views
+        usernameEt = findViewById(R.id.username);
+        mobileEt = findViewById(R.id.mobile);
+        emailEt = findViewById(R.id.email);
+        pass1Et = findViewById(R.id.password);
+        pass2Et = findViewById(R.id.repass);
+        submitBtn = findViewById(R.id.submit);
+
+        // SharedPreferences
+        sharedPreferences = getSharedPreferences(
+                "UserDetails",
+                MODE_PRIVATE
+        );
+
+        editor = sharedPreferences.edit();
+
+        // Submit button
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                String username =
+                        usernameEt.getText().toString().trim();
+
+                String mobile =
+                        mobileEt.getText().toString().trim();
+
+                String email =
+                        emailEt.getText().toString().trim();
+
+                String password =
+                        pass1Et.getText().toString().trim();
+
+                String rePassword =
+                        pass2Et.getText().toString().trim();
+
+                // Username validation
+                if (username.isEmpty()) {
+
+                    usernameEt.setError("Enter username");
+                    usernameEt.requestFocus();
+                    return;
+                }
+
+                // Mobile validation
+                if (mobile.isEmpty()) {
+
+                    mobileEt.setError("Enter mobile number");
+                    mobileEt.requestFocus();
+                    return;
+                }
+
+                if (mobile.length() != 10) {
+
+                    mobileEt.setError(
+                            "Enter a valid 10-digit mobile number"
+                    );
+
+                    mobileEt.requestFocus();
+                    return;
+                }
+
+                // Email validation
+                if (email.isEmpty()) {
+
+                    emailEt.setError("Enter email address");
+                    emailEt.requestFocus();
+                    return;
+                }
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+                    emailEt.setError(
+                            "Enter a valid email address"
+                    );
+
+                    emailEt.requestFocus();
+                    return;
+                }
+
+                // Password validation
+                if (password.isEmpty()) {
+
+                    pass1Et.setError("Enter password");
+                    pass1Et.requestFocus();
+                    return;
+                }
+
+                if (password.length() < 6) {
+
+                    pass1Et.setError(
+                            "Password must contain at least 6 characters"
+                    );
+
+                    pass1Et.requestFocus();
+                    return;
+                }
+
+                // Retype password validation
+                if (rePassword.isEmpty()) {
+
+                    pass2Et.setError("Retype password");
+                    pass2Et.requestFocus();
+                    return;
+                }
+
+                // Compare passwords
+                if (!password.equals(rePassword)) {
+
+                    pass2Et.setError(
+                            "Passwords do not match"
+                    );
+
+                    pass2Et.requestFocus();
+                    return;
+                }
+
+                // Save data
+                editor.putString("keyusername", username);
+                editor.putString("keymobile", mobile);
+                editor.putString("keymail", email);
+
+                // For demonstration/college project
+                editor.putString("keypassword", password);
+
+                editor.apply();
+
+                // Success message
+                Toast.makeText(
+                        MainActivity.this,
+                        "Registration successful",
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+    }
+}
